@@ -25,24 +25,20 @@ func ReadBytes(len int, reader *bufio.Reader) ([]uint8, int, error) {
 	return readdata, count, nil
 }
 
-func ReadLabel(reader *bufio.Reader) ([]bool, error) {
-	labeldata := make([]bool, labelSize)
-
+func ReadLabel(reader *bufio.Reader) (int, error) {
 	b, err := reader.ReadByte()
 	if err != nil {
-		return labeldata, err
+		return 0, err
 	}
 
-	labeldata[int(b)-1] = true
-
-	return labeldata, nil
+	return int(b), nil
 }
 
 type MNIST struct {
 	TrainImages      [][]uint8
-	TrainLabels      [][]bool
+	TrainLabels      []int
 	TestImages       [][]uint8
-	TestLabels       [][]bool
+	TestLabels       []int
 	TrainDataSize    int
 	TrainImageWidth  int
 	TrainImageHeight int
@@ -106,7 +102,7 @@ func InitMNIST() (*MNIST, error) {
 	// Train Label
 	tilreader := bufio.NewReader(trainlabel)
 	ReadBytes(8, tilreader)
-	mnist.TrainLabels = make([][]bool, mnist.TrainDataSize)
+	mnist.TrainLabels = make([]int, mnist.TrainDataSize)
 	for i := 0; i < mnist.TrainDataSize; i++ {
 		labeldata, err := ReadLabel(tilreader)
 		if err != nil {
@@ -144,7 +140,7 @@ func InitMNIST() (*MNIST, error) {
 	// Test Label
 	tlreader := bufio.NewReader(testlabel)
 	ReadBytes(8, tlreader)
-	mnist.TestLabels = make([][]bool, mnist.TestDataSize)
+	mnist.TestLabels = make([]int, mnist.TestDataSize)
 	for i := 0; i < mnist.TestDataSize; i++ {
 		labeldata, err := ReadLabel(tlreader)
 		if err != nil {
@@ -154,5 +150,6 @@ func InitMNIST() (*MNIST, error) {
 		mnist.TestLabels[i] = labeldata
 	}
 
+	// fmt.Println(mnist.TrainLabels)
 	return mnist, nil
 }
