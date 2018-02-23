@@ -205,4 +205,6 @@ func (m *MNIST) GetDataForNN() (trainimages, trainlabels, testimages, testlabels
 	trainlabels = m.GetTrainLabelsOneHot()
 	testimages = m.GetTestImagesFloat64()
 	testlabels = m.GetTestLabelsOneHot()
+
+	return
 }
