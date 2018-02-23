@@ -153,3 +153,56 @@ func InitMNIST() (*MNIST, error) {
 	// fmt.Println(mnist.TrainLabels)
 	return mnist, nil
 }
+
+func (m *MNIST) GetTrainImagesFloat64() [][]float64 {
+	trainimagesFloat64 := make([][]float64, m.TrainDataSize)
+	imageSize := m.TrainImageHeight * m.TrainImageWidth
+	for i := 0; i < m.TrainDataSize; i++ {
+		trainimagesFloat64[i] = make([]float64, imageSize)
+		for j := 0; j < imageSize; j++ {
+			trainimagesFloat64[i][j] = float64(m.TrainImages[i][j])
+		}
+	}
+
+	return trainimagesFloat64
+}
+
+func (m *MNIST) GetTestImagesFloat64() [][]float64 {
+	testimagesFloat64 := make([][]float64, m.TestDataSize)
+	imageSize := m.TestImageHeight * m.TestImageWidth
+	for i := 0; i < m.TestDataSize; i++ {
+		testimagesFloat64[i] = make([]float64, imageSize)
+		for j := 0; j < imageSize; j++ {
+			testimagesFloat64[i][j] = float64(m.TestImages[i][j])
+		}
+	}
+
+	return testimagesFloat64
+}
+
+func (m *MNIST) GetTrainLabelsOneHot() [][]float64 {
+	trainlabels := make([][]float64, m.TrainDataSize)
+	for i := 0; i < m.TrainDataSize; i++ {
+		trainlabels[i] = make([]float64, labelSize)
+		trainlabels[i][m.TrainLabels[i]] = 1.0
+	}
+
+	return trainlabels
+}
+
+func (m *MNIST) GetTestLabelsOneHot() [][]float64 {
+	testlabels := make([][]float64, m.TestDataSize)
+	for i := 0; i < m.TestDataSize; i++ {
+		testlabels[i] = make([]float64, labelSize)
+		testlabels[i][m.TestLabels[i]] = 1.0
+	}
+
+	return testlabels
+}
+
+func (m *MNIST) GetDataForNN() (trainimages, trainlabels, testimages, testlabels [][]float64) {
+	trainimages = m.GetTrainImagesFloat64()
+	trainlabels = m.GetTrainLabelsOneHot()
+	testimages = m.GetTestImagesFloat64()
+	testlabels = m.GetTestLabelsOneHot()
+}
