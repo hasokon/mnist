@@ -200,11 +200,23 @@ func (m *MNIST) GetTestLabelsOneHot() [][]float64 {
 	return testlabels
 }
 
-func (m *MNIST) GetDataForNN() (trainimages, trainlabels, testimages, testlabels [][]float64) {
-	trainimages = m.GetTrainImagesFloat64()
-	trainlabels = m.GetTrainLabelsOneHot()
-	testimages = m.GetTestImagesFloat64()
-	testlabels = m.GetTestLabelsOneHot()
+func flat(t [][]float64) []float64 {
+	l0 := len(t)
+	l1 := len(t[0])
+	ans := make([]float64, 0, l0*l1)
+
+	for i := 0; i < l0; i++ {
+		ans = append(ans, t[i]...)
+	}
+
+	return ans
+}
+
+func (m *MNIST) GetDataForNN() (trainimages, trainlabels, testimages, testlabels []float64) {
+	trainimages = flat(m.GetTrainImagesFloat64())
+	trainlabels = flat(m.GetTrainLabelsOneHot())
+	testimages = flat(m.GetTestImagesFloat64())
+	testlabels = flat(m.GetTestLabelsOneHot())
 
 	return
 }
